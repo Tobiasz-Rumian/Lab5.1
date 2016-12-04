@@ -1,19 +1,15 @@
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.event.*;
 
-/**
- * Created by Tobiasz Rumian on 26.11.2016.
- */
 public class Gui extends JFrame {
     private JButton buttonStart = new JButton("Start");
     private JButton buttonStop = new JButton("Zatrzymaj");
     private JButton buttonFreeze = new JButton("Zamróź");
     private JSlider sliderProducers = new JSlider(1, 10);
     private JSlider sliderBuyers = new JSlider(1, 10);
-    private JSlider sliderBuffer = new JSlider(1,10);
+    private JSlider sliderBuffer = new JSlider(1, 10);
     private JLabel labelProducers = new JLabel("Ilu producentów?");
     private JLabel labelBuyers = new JLabel("Ilu kupców?");
     private JLabel labelBuffer = new JLabel("Jak duży bufer?");
@@ -30,15 +26,17 @@ public class Gui extends JFrame {
     private GraphicRepresentation graphicRepresentation = new GraphicRepresentation();
     private static Dimension frameSize = new Dimension(800, 700);
 
-    public Gui() {
+    private Gui() {
         super("Tobiasz Rumian Laboratorium 5.1");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(frameSize);
         buttonStop.setEnabled(false);
-        buffer = new Buffer(this,graphicRepresentation);
+        buttonFreeze.setEnabled(false);
+        buffer = new Buffer(this, graphicRepresentation);
         DefaultCaret caret = (DefaultCaret) textArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         this.addComponentListener(new CustomComponentListener());
+        this.addWindowStateListener(new CustomWindowStateListener());
         setVisible(true);
         menuBar.add(buttonStart);
         menuBar.add(new JSeparator(JSeparator.VERTICAL));
@@ -59,7 +57,7 @@ public class Gui extends JFrame {
         JPanel panel = new JPanel();
         textArea.setEditable(false);
         setContentPane(panel);
-        scrollPane.setPreferredSize(new Dimension((int) frameSize.getWidth()-20, (int) (frameSize.getHeight() * 0.25)));
+        scrollPane.setPreferredSize(new Dimension((int) frameSize.getWidth() - 20, (int) (frameSize.getHeight() * 0.25)));
         panel.add(scrollPane);
         panel.add(graphicRepresentation);
         graphicRepresentation.setVisible(true);
@@ -67,95 +65,94 @@ public class Gui extends JFrame {
         graphicRepresentation.setBackground(Color.blue);
         setJMenuBar(menuBar);
 
-        repaint();
-
-
         buttonStart.addActionListener(actionEvent -> {
             buttonStart.setEnabled(false);
             sliderBuyers.setEnabled(false);
             sliderProducers.setEnabled(false);
             buttonStop.setEnabled(true);
+            buttonFreeze.setEnabled(true);
             howManyBuyers = sliderBuyers.getValue();
             howManyProducers = sliderProducers.getValue();
             graphicRepresentation.createFigures();
             buffer.setHowMany(sliderBuffer.getValue());
             maker = new Maker();
         });
-        sliderProducers.addChangeListener(changeEvent -> {
-            labelHMProducers.setText(Integer.toString(sliderProducers.getValue()));
-        });
-        sliderBuyers.addChangeListener(changeEvent -> {
-            labelHMBuyers.setText(Integer.toString(sliderBuyers.getValue()));
-            repaint();
-        });
-        sliderBuffer.addChangeListener(changeEvent -> {
-            labelHMBuffer.setText(Integer.toString(sliderBuffer.getValue()));
-            repaint();
-        });
+        sliderProducers.addChangeListener(changeEvent -> labelHMProducers.setText(Integer.toString(sliderProducers.getValue())));
+        sliderBuyers.addChangeListener(changeEvent -> labelHMBuyers.setText(Integer.toString(sliderBuyers.getValue())));
+        sliderBuffer.addChangeListener(changeEvent -> labelHMBuffer.setText(Integer.toString(sliderBuffer.getValue())));
         buttonStop.addActionListener(actionEvent -> {
             buttonStart.setEnabled(true);
             sliderBuyers.setEnabled(true);
             sliderProducers.setEnabled(true);
             buttonStop.setEnabled(false);
+            buttonFreeze.setEnabled(false);
             textArea.setText("");
             maker.exit();
             graphicRepresentation.kill();
-            graphicRepresentation=new GraphicRepresentation();
-            maker=new Maker();
-            buffer= new Buffer(this, graphicRepresentation);
+            graphicRepresentation = new GraphicRepresentation();
+            maker = new Maker();
+            buffer = new Buffer(this, graphicRepresentation);
             System.gc();
         });
         buttonFreeze.addActionListener(actionEvent -> {
             maker.freeze();
+            buffer.freeze();
         });
-
     }
 
     public static void main(String[] args) {
         new Gui();
     }
 
-    public static int getHowManyProducers() {
+    static int getHowManyProducers() {
         return howManyProducers;
     }
 
-    public static int getHowManyBuyers() {
+    static int getHowManyBuyers() {
         return howManyBuyers;
     }
 
-    public void addToTextArea(String text) {
+    void addToTextArea(String text) {
         textArea.append(text + "\n");
         textArea.setCaretPosition(textArea.getDocument().getLength());
     }
 
-    public static Buffer getBufor() {
+    static Buffer getBuffer() {
         return buffer;
     }
 
-    public static Dimension getFrameSize() {
+    static Dimension getFrameSize() {
         return frameSize;
+    }
+
+    private void setComponentsSize(ComponentEvent e) {
+        frameSize = e.getComponent().getBounds().getSize();
+        graphicRepresentation.setPreferredSize(new Dimension((int) frameSize.getWidth(), (int) (frameSize.getWidth() * 0.75)));
+        scrollPane.setPreferredSize(new Dimension((int) frameSize.getWidth() - 20, (int) (frameSize.getHeight() * 0.25)));
+        graphicRepresentation.refreshCoordinates();
     }
 
     class CustomComponentListener implements ComponentListener {
 
         public void componentResized(ComponentEvent e) {
-            frameSize = e.getComponent().getBounds().getSize();
-            graphicRepresentation.setPreferredSize(new Dimension((int) frameSize.getWidth(), (int) (frameSize.getWidth() * 0.75)));
-            scrollPane.setPreferredSize(new Dimension((int) frameSize.getWidth()-20, (int) (frameSize.getHeight() * 0.25)));
-            graphicRepresentation.refreshCoordinates();
+            setComponentsSize(e);
         }
 
         public void componentMoved(ComponentEvent e) {
         }
 
         public void componentShown(ComponentEvent e) {
-            frameSize = e.getComponent().getBounds().getSize();
-            graphicRepresentation.setPreferredSize(new Dimension((int) frameSize.getWidth(), (int) (frameSize.getWidth() * 0.75)));
-            scrollPane.setPreferredSize(new Dimension((int) frameSize.getWidth()-20, (int) (frameSize.getHeight() * 0.25)));
-            graphicRepresentation.refreshCoordinates();
         }
 
         public void componentHidden(ComponentEvent e) {
+        }
+    }
+
+    class CustomWindowStateListener implements WindowStateListener {
+
+        @Override
+        public void windowStateChanged(WindowEvent e) {
+            setComponentsSize(e);
         }
     }
 }

@@ -1,10 +1,10 @@
 import java.awt.*;
 
-public class Circle {
+class Circle {
     private double x, y;
     private Color color = new Color(20);
-    private float r=15;
-    private int currentState=0;
+    private float r = 15;
+    private int currentState = 0;
     private Color defaultColor;
 
     Circle(double px, double py) {
@@ -12,8 +12,8 @@ public class Circle {
         this.y = py;
     }
 
-    void moveX(double px){
-        x=px;
+    void moveX(double px) {
+        x = px;
     }
 
     void draw(Graphics g) {
@@ -22,21 +22,25 @@ public class Circle {
         g.fillOval((int) (x - r), (int) (y - r), (int) (2 * r), (int) (2 * r));
     }
 
-    public void setColor(Color color) {
+    void setColor(Color color) {
         this.color = color;
     }
-    public void setCurrentState(int currentState){
-        this.currentState=currentState;
+
+    void setCurrentState(int currentState) {
+        this.currentState = currentState;
     }
-    public int getCurrentState(){
+
+    int getCurrentState() {
         return currentState;
     }
-    public Color getDefaultColor(){
+
+    Color getDefaultColor() {
         return defaultColor;
     }
-    public void setDefaultColor(Color color){
-        defaultColor=color;
-        this.color=color;
+
+    void setDefaultColor(Color color) {
+        defaultColor = color;
+        this.color = color;
     }
 }
 
