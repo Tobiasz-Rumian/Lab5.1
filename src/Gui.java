@@ -37,7 +37,6 @@ public class Gui extends JFrame {
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         this.addComponentListener(new CustomComponentListener());
         this.addWindowStateListener(new CustomWindowStateListener());
-        setVisible(true);
         menuBar.add(buttonStart);
         menuBar.add(new JSeparator(JSeparator.VERTICAL));
         menuBar.add(labelProducers);
@@ -64,6 +63,7 @@ public class Gui extends JFrame {
         graphicRepresentation.setPreferredSize(new Dimension((int) frameSize.getWidth(), (int) (frameSize.getWidth() * 0.75)));
         graphicRepresentation.setBackground(Color.blue);
         setJMenuBar(menuBar);
+        setVisible(true);
 
         buttonStart.addActionListener(actionEvent -> {
             buttonStart.setEnabled(false);

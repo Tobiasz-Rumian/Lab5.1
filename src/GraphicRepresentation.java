@@ -8,7 +8,7 @@ public class GraphicRepresentation extends JPanel {
     private ArrayList<Double> producerLocation = new ArrayList<>();
     private ArrayList<Double> buyerLocation = new ArrayList<>();
     private boolean kill = false;
-    private JLabel label = new JLabel("TEST");
+    private JLabel label = new JLabel("");
 
     GraphicRepresentation() {
         for (int i = 0; i < 3; i++) {
