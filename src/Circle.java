@@ -1,3 +1,14 @@
+/*
+ *  Klasa Circle
+ *  Reprezentuje koła kupców i producentów.
+ *
+ *  @author Tobiasz Rumian
+ *  @version 1.1
+ *   Data: 08 Grudzień 2016 r.
+ *   Indeks: 226131
+ *   Grupa: śr 13:15 TN
+ */
+
 import java.awt.*;
 
 class Circle {

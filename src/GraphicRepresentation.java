@@ -1,3 +1,15 @@
+/*
+ *  Klasa GraphicRepresentation
+ *
+ *  Klasa zajmuje się graficzną reprezentacją wątków.
+ *
+ *  @author Tobiasz Rumian
+ *  @version 1.1
+ *   Data: 08 Grudzień 2016 r.
+ *   Indeks: 226131
+ *   Grupa: śr 13:15 TN
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -103,7 +115,8 @@ public class GraphicRepresentation extends JPanel {
         kill = true;
         repaint();
     }
-    void setLabel(String text){
+
+    void setLabel(String text) {
         label.setText(text);
     }
 }

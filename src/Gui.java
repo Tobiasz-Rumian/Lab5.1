@@ -1,18 +1,29 @@
+/*
+ *  Klasa Gui
+ *  Klasa obsługuje okno programu.
+ *
+ *  @author Tobiasz Rumian
+ *  @version 1.1
+ *   Data: 08 Grudzień 2016 r.
+ *   Indeks: 226131
+ *   Grupa: śr 13:15 TN
+ */
+
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class Gui extends JFrame {
     private JButton buttonStart = new JButton("Start");
     private JButton buttonStop = new JButton("Zatrzymaj");
     private JButton buttonFreeze = new JButton("Zamróź");
-    private JSlider sliderProducers = new JSlider(1, 10);
-    private JSlider sliderBuyers = new JSlider(1, 10);
-    private JSlider sliderBuffer = new JSlider(1, 10);
-    private JLabel labelProducers = new JLabel("Ilu producentów?");
-    private JLabel labelBuyers = new JLabel("Ilu kupców?");
-    private JLabel labelBuffer = new JLabel("Jak duży bufer?");
+    private JButton buttonAbout = new JButton("Autor");
+    private JSlider sliderProducers = new JSlider(1, 1, 10, 5);
+    private JSlider sliderBuyers = new JSlider(1, 1, 10, 5);
+    private JSlider sliderBuffer = new JSlider(1, 1, 10, 5);
     private JLabel labelHMProducers = new JLabel(Integer.toString(sliderProducers.getValue()));
     private JLabel labelHMBuyers = new JLabel(Integer.toString(sliderBuyers.getValue()));
     private JLabel labelHMBuffer = new JLabel(Integer.toString(sliderBuffer.getValue()));
@@ -38,21 +49,10 @@ public class Gui extends JFrame {
         this.addComponentListener(new CustomComponentListener());
         this.addWindowStateListener(new CustomWindowStateListener());
         menuBar.add(buttonStart);
-        menuBar.add(new JSeparator(JSeparator.VERTICAL));
-        menuBar.add(labelProducers);
-        menuBar.add(sliderProducers);
-        menuBar.add(labelHMProducers);
-        menuBar.add(new JSeparator(JSeparator.VERTICAL));
-        menuBar.add(labelBuyers);
-        menuBar.add(sliderBuyers);
-        menuBar.add(labelHMBuyers);
-        menuBar.add(new JSeparator(JSeparator.VERTICAL));
-        menuBar.add(labelBuffer);
-        menuBar.add(sliderBuffer);
-        menuBar.add(labelHMBuffer);
-        menuBar.add(new JSeparator(JSeparator.VERTICAL));
+        createSliders();
         menuBar.add(buttonFreeze);
         menuBar.add(buttonStop);
+        menuBar.add(buttonAbout);
         JPanel panel = new JPanel();
         textArea.setEditable(false);
         setContentPane(panel);
@@ -81,7 +81,7 @@ public class Gui extends JFrame {
         sliderBuyers.addChangeListener(changeEvent -> labelHMBuyers.setText(Integer.toString(sliderBuyers.getValue())));
         sliderBuffer.addChangeListener(changeEvent -> labelHMBuffer.setText(Integer.toString(sliderBuffer.getValue())));
         buttonStop.addActionListener(actionEvent -> {
-            buttonStart.setEnabled(true);
+            buttonStart.setEnabled(false);
             sliderBuyers.setEnabled(true);
             sliderProducers.setEnabled(true);
             buttonStop.setEnabled(false);
@@ -90,14 +90,39 @@ public class Gui extends JFrame {
             maker.exit();
             graphicRepresentation.kill();
             graphicRepresentation = new GraphicRepresentation();
-            maker = new Maker();
-            buffer = new Buffer(this, graphicRepresentation);
-            System.gc();
         });
         buttonFreeze.addActionListener(actionEvent -> {
             maker.freeze();
             buffer.freeze();
         });
+        buttonAbout.addActionListener(actionEvent -> {
+            About about;
+            try {
+                about = new About(this);
+                about.setVisible(true);
+            } catch (Exception event) {
+                System.err.println(event.getMessage());
+            }
+        });
+    }
+
+    private void createSliders() {
+        sliderProducers.setMajorTickSpacing(5);
+        sliderProducers.setMinorTickSpacing(1);
+        sliderProducers.setPaintTicks(true);
+        sliderProducers.setPaintLabels(true);
+        JMenu menuProducers = new JMenu("Ilu producentów?");
+        menuProducers.add(sliderProducers);
+        menuProducers.add(labelHMProducers);
+        menuBar.add(menuProducers);
+        sliderBuyers.setMajorTickSpacing(5);
+        sliderBuyers.setMinorTickSpacing(1);
+        sliderBuyers.setPaintTicks(true);
+        sliderBuyers.setPaintLabels(true);
+        JMenu menuBuyers = new JMenu("Ilu kupców?");
+        menuBuyers.add(sliderBuyers);
+        menuBuyers.add(labelHMBuyers);
+        menuBar.add(menuBuyers);
     }
 
     public static void main(String[] args) {
@@ -153,6 +178,26 @@ public class Gui extends JFrame {
         @Override
         public void windowStateChanged(WindowEvent e) {
             setComponentsSize(e);
+        }
+    }
+
+    private class About extends JDialog {
+        About(JFrame owner) throws MalformedURLException {
+            super(owner, "O Autorze", true);
+            URL url = null;
+            try {
+                url = new URL("https://media.giphy.com/media/l0HlIKdi4DIEDk92g/giphy.gif");
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+            Icon icon = new ImageIcon(url);
+            JLabel label = new JLabel(icon);
+            add(new JLabel("Autor:\t Tobiasz Rumian\t Indeks: 226131"), BorderLayout.NORTH);
+            add(label, BorderLayout.CENTER);
+            JButton ok = new JButton("ok");
+            ok.addActionListener(e -> setVisible(false));
+            add(ok, BorderLayout.SOUTH);
+            setSize(400, 400);
         }
     }
 }

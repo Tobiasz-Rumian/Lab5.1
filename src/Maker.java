@@ -1,3 +1,14 @@
+/*
+ *  Klasa Maker
+ *  Zajmuje się tworzeniem wątków i przechowywaniem ich.
+ *
+ *  @author Tobiasz Rumian
+ *  @version 1.1
+ *   Data: 08 Grudzień 2016 r.
+ *   Indeks: 226131
+ *   Grupa: śr 13:15 TN
+ */
+
 import java.util.ArrayList;
 
 
@@ -14,10 +25,14 @@ class Maker {
     }
 
     void exit() {
-        for (Producer p : producers) p.kill();
-        for (Buyer k : buyers) k.kill();
-        producers.clear();
-        buyers.clear();
+        for (Producer c : producers) {
+            c.kill();
+        }
+        for (Buyer c : buyers) {
+            c.kill();
+        }
+        buyers = new ArrayList<>();
+        producers = new ArrayList<>();
     }
 
     void freeze() {

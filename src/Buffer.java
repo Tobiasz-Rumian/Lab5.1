@@ -1,9 +1,20 @@
+/*
+ *  Klasa Buffer
+ *  Zajmuje się przechowywaniem materiału i obsługą poleceń pobierania i oddawania towaru.
+ *
+ *  @author Tobiasz Rumian
+ *  @version 1.1
+ *   Data: 08 Grudzień 2016 r.
+ *   Indeks: 226131
+ *   Grupa: śr 13:15 TN
+ */
+
 import java.util.ArrayList;
 import java.util.Random;
 
 
-public class Buffer {
-    ArrayList<Long> contents = new ArrayList<>();
+class Buffer {
+    private ArrayList<Long> contents = new ArrayList<>();
     private int howMany = 0;
     private boolean freeze = false;
     private boolean empty = true;
@@ -80,7 +91,7 @@ public class Buffer {
             }
         }
         if (graphicRepresentation.moveLevel(id, true, false) != 0) return;
-        if (graphicRepresentation.moveLevel(id, true, false) != 0) return;
+        graphicRepresentation.moveLevel(id, true, false);
     }
 
     void setHowMany(int howMany) {
